@@ -1,5 +1,5 @@
 extern crate itertools_num;
-use itertools_num::linspace;
+pub use itertools_num::linspace;
 
 pub fn grid_linspace(xl: f32, xr: f32, xnum: usize, yl: f32, yr: f32, ynum: usize) -> (Vec<f32>, Vec<f32>) {
     // create x range
