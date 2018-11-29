@@ -2,6 +2,13 @@
 name = "simple_shapes"
 version = "0.1.0"
 authors = ["dineshadepu <adepu.dinesh.a@gmail.com>"]
+description = "Library for generating geometries particle methods"
+license = "Apache-2.0/MIT"
+repository = "https://github.com/dineshadepu/simple_shapes"
+documentation = "https://docs.rs/simple_shapes/"
+readme = "README.org"
+keywords = ["2d_grid", "grid", "geometry"]
+categories = ["simulation"]
 
 [dependencies]
 itertools-num = "0.1"

@@ -1,0 +1,4 @@
+* What is this?
+
+  This library is used to generate simple geometries made of particles, for
+  example tank, a particles block. It is heavily used in [[https://github.com/dineshadepu/prestige/][prestige]].
