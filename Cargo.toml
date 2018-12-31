@@ -12,3 +12,4 @@ categories = ["simulation"]
 
 [dependencies]
 itertools-num = "0.1"
+vtkio = "0.1.6"
