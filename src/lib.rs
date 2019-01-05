@@ -2,9 +2,9 @@ extern crate itertools_num;
 extern crate vtkio;
 pub use itertools_num::linspace;
 
-use vtkio::model::*;
-use vtkio::export_ascii;
 use std::path::PathBuf;
+use vtkio::export_ascii;
+use vtkio::model::*;
 
 pub fn grid_linspace(
     xl: f32,
@@ -187,7 +187,7 @@ pub fn hollow_box_2d(
     y_spacing: f32,
     layers: usize,
     outside: bool,
-) -> (Vec<f32>, Vec<f32>){
+) -> (Vec<f32>, Vec<f32>) {
     let (xl_lim, xr_lim, yl_lim, yr_lim) = match outside {
         true => {
             let xl_lim = xl;
@@ -226,6 +226,29 @@ pub fn hollow_box_2d(
     (x, y)
 }
 
+pub fn circle_2d(center: (f32, f32), radius: f32, spacing: f32) -> (Vec<f32>, Vec<f32>){
+    // create a 2d grid
+    let (xg, yg) = grid_arange(
+        center.0 - radius + spacing/2.,
+        center.0 + radius + spacing/2.,
+        spacing,
+        center.1 - radius + spacing/2.,
+        center.1 + radius + spacing/2.,
+        spacing,
+    );
+
+    // filter the particles which are out of the circle
+    let mut xc = vec![];
+    let mut yc = vec![];
+    for i in 0..xg.len(){
+        if (xg[i] - center.0).powf(2.0) + (yg[i] - center.1).powf(2.0) <= radius.powf(2.){
+            xc.push(xg[i]);
+            yc.push(yg[i]);
+        }
+    }
+    (xc, yc)
+}
+
 /// A simple struct to test different geometries
 pub struct Entity {
     x: Vec<f32>,
@@ -236,15 +259,13 @@ pub struct Entity {
 
 impl Entity {
     pub fn from_xyz_rad(x: Vec<f32>, y: Vec<f32>, z: Vec<f32>, rad: Vec<f32>) -> Self {
-        Entity{
-            x, y, z, rad
-        }
+        Entity { x, y, z, rad }
     }
 
     pub fn from_xy(x: Vec<f32>, y: Vec<f32>) -> Self {
         Entity::from_xyz_rad(x.clone(), y.clone(), vec![0.; x.len()], vec![1.; x.len()])
     }
-    pub fn write_vtk(self, filename: &str){
+    pub fn write_vtk(self, filename: &str) {
         let mut pos = vec![];
         let mut radius = vec![];
         for i in 0..self.x.len() {
