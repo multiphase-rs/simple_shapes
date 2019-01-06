@@ -1,6 +1,11 @@
 extern crate itertools_num;
 extern crate vtkio;
+
+pub mod benchmarks;
+
+
 pub use itertools_num::linspace;
+
 
 use std::path::PathBuf;
 use vtkio::export_ascii;
@@ -103,14 +108,22 @@ pub fn grid_arange_3d(
 }
 
 pub fn tank_2d(
-    xl: f32,
-    xr: f32,
+    mut xl: f32,
+    mut xr: f32,
     x_spacing: f32,
-    yl: f32,
-    yr: f32,
+    mut yl: f32,
+    mut yr: f32,
     y_spacing: f32,
     layers: usize,
+    outside: bool,
 ) -> (Vec<f32>, Vec<f32>) {
+    assert!(layers > 0);
+    if outside {
+        xl = xl - (layers - 1) as f32 * x_spacing - x_spacing / 2.;
+        xr = xr + (layers - 1) as f32 * x_spacing + x_spacing / 2.;
+        yl = yl - (layers - 1) as f32 * y_spacing - y_spacing / 2.;
+        yr = yr + (layers - 1) as f32 * y_spacing + y_spacing / 2.;
+    }
     let x_arange = arange(xl, xr, x_spacing);
 
     let (xg, yg) = grid_arange(xl, xr, x_spacing, yl, yr, y_spacing);
@@ -134,7 +147,6 @@ pub fn tank_2d(
     }
     (x, y)
 }
-
 
 pub fn tank_3d(
     xl: f32,
@@ -226,22 +238,22 @@ pub fn hollow_box_2d(
     (x, y)
 }
 
-pub fn circle_2d(center: (f32, f32), radius: f32, spacing: f32) -> (Vec<f32>, Vec<f32>){
+pub fn circle_2d(center: (f32, f32), radius: f32, spacing: f32) -> (Vec<f32>, Vec<f32>) {
     // create a 2d grid
     let (xg, yg) = grid_arange(
-        center.0 - radius + spacing/2.,
-        center.0 + radius + spacing/2.,
+        center.0 - radius + spacing / 2.,
+        center.0 + radius + spacing / 2.,
         spacing,
-        center.1 - radius + spacing/2.,
-        center.1 + radius + spacing/2.,
+        center.1 - radius + spacing / 2.,
+        center.1 + radius + spacing / 2.,
         spacing,
     );
 
     // filter the particles which are out of the circle
     let mut xc = vec![];
     let mut yc = vec![];
-    for i in 0..xg.len(){
-        if (xg[i] - center.0).powf(2.0) + (yg[i] - center.1).powf(2.0) <= radius.powf(2.){
+    for i in 0..xg.len() {
+        if (xg[i] - center.0).powf(2.0) + (yg[i] - center.1).powf(2.0) <= radius.powf(2.) {
             xc.push(xg[i]);
             yc.push(yg[i]);
         }

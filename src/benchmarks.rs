@@ -1,41 +1,4 @@
-#+startup: hideblocks
-#+startup: content
-#+TITLE: Create simple shapes in particle methods
-#+AUTHOR: Dinesh A
-#+LANGUAGE: en
-#+TEXINFO_DIR_DESC: How to create particle geometries
-
-* Table of Contents                                            :TOC_4:
-- [[#what-is-this][What is this?]]
-- [[#examples][Examples]]
-  - [[#stack-of-cylinders-collapsing][Stack of cylinders collapsing]]
-
-* What is this?
-
-  This library is used to generate simple geometries made of particles, for
-  example tank, a particles block. It is heavily used in [[https://github.com/dineshadepu/prestige/][prestige]].
-
-* Examples
-
-** Stack of cylinders collapsing
-
-   Figure ref:fig:cylinders_collapse is taken from cite:zhang-2009-simul-solid. The geometry we are trying to
-   simulate is
-
-   #+CAPTION: Collapsing of cylinders label:fig:cylinders_collapse
-   #+ATTR_LaTeX: scale=0.75
-   [[./figures/cylinders_collapse.png]]
-
-   We need to create a total of six layers of cylinders with five or six
-   cylinders in each row. We will number layers from bottom. The bottom row
-   is one, then two and so on.
-
-   First we will create the bottom layer, then the second layer, then copy the
-   bottom layer and increase its y coordinate such that it is on top of second
-   layer. Write these functions in =src/benchmarks.rs= so that it can be reused.
-
-   #+NAME: code:create_zhang_geometry
-   #+BEGIN_SRC rust :tangle ./src/benchmarks.rs :comments link
+// [[file:~/phd/code_phd/simple_shapes/README.org::code:create_zhang_geometry][code:create_zhang_geometry]]
 use crate::{tank_2d, circle_2d};
 /// Create stack of cylinders as in the benchmark of Zhang
 pub fn create_cylinders_zhang(spacing: f32) -> (Vec<f32>, Vec<f32>, Vec<usize>) {
@@ -163,48 +126,4 @@ pub fn create_zhang_geometry(spacing: f32) -> (Vec<f32>, Vec<f32>, Vec<usize>, V
 
     (xc, yc, bid, xt, yt)
 }
-   #+END_SRC
-
-   using these functions, we can visualize by creating an example. The code
-   looks like
-
-   #+NAME: code:example_zhang_geometry
-   #+BEGIN_SRC rust :tangle ./examples/zhang_collapsing_cylinders.rs :comments link
-extern crate simple_shapes;
-extern crate vtkio;
-
-use simple_shapes::{create_zhang_geometry, Entity};
-
-fn main() {
-    let spacing = 0.001;
-
-    let (xc, yc, _, xt, yt) = create_zhang_geometry(spacing);
-
-    let tank = Entity::from_xyz_rad(
-        xt.clone(),
-        yt,
-        vec![0.; xt.len()],
-        vec![spacing / 2.; xt.len()],
-    );
-    let circle = Entity::from_xyz_rad(
-        xc.clone(),
-        yc,
-        vec![0.; xc.len()],
-        vec![spacing / 2.; xc.len()],
-    );
-
-    circle.write_vtk("zhang_circles.vtk");
-    tank.write_vtk("zhang_tank.vtk");
-}
-   #+END_SRC
-
-   Run the example by
-
-   #+NAME: zhang_geometry_run
-   #+BEGIN_SRC sh
-cargo --release --example zhang_collapsing_cylinders
-   #+END_SRC
-
-   Which will generate two files in the root directory with names
-   =zhang_circles.vtk= and =zhang_tank.vtk=. Visualize them in paraview or your
-   favorite visualizer. (The format of the =vtk= file is unstructured).
+// code:create_zhang_geometry ends here
