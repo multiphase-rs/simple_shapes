@@ -2,6 +2,7 @@ extern crate itertools_num;
 extern crate vtkio;
 
 pub mod benchmarks;
+pub mod prelude;
 
 
 pub use itertools_num::linspace;
