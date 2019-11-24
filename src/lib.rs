@@ -13,18 +13,18 @@ use vtkio::export_ascii;
 use vtkio::model::*;
 
 pub fn grid_linspace(
-    xl: f32,
-    xr: f32,
+    xl: f64,
+    xr: f64,
     xnum: usize,
-    yl: f32,
-    yr: f32,
+    yl: f64,
+    yr: f64,
     ynum: usize,
-) -> (Vec<f32>, Vec<f32>) {
+) -> (Vec<f64>, Vec<f64>) {
     // create x range
-    let x = linspace::<f32>(xl, xr, xnum).collect::<Vec<_>>();
+    let x = linspace::<f64>(xl, xr, xnum).collect::<Vec<_>>();
 
     // create y range
-    let y = linspace::<f32>(yl, yr, ynum).collect::<Vec<_>>();
+    let y = linspace::<f64>(yl, yr, ynum).collect::<Vec<_>>();
 
     let mut x_grid = vec![];
     let mut y_grid = vec![];
@@ -38,7 +38,7 @@ pub fn grid_linspace(
     (x_grid, y_grid)
 }
 
-pub fn arange(left: f32, right: f32, step: f32) -> Vec<f32> {
+pub fn arange(left: f64, right: f64, step: f64) -> Vec<f64> {
     let mut x = vec![];
     let mut tmp = left;
 
@@ -55,13 +55,13 @@ fn test_arange() {
 }
 
 pub fn grid_arange(
-    xl: f32,
-    xr: f32,
-    x_spacing: f32,
-    yl: f32,
-    yr: f32,
-    y_spacing: f32,
-) -> (Vec<f32>, Vec<f32>) {
+    xl: f64,
+    xr: f64,
+    x_spacing: f64,
+    yl: f64,
+    yr: f64,
+    y_spacing: f64,
+) -> (Vec<f64>, Vec<f64>) {
     let x_arange = arange(xl, xr, x_spacing);
     let y_arange = arange(yl, yr, y_spacing);
 
@@ -78,16 +78,16 @@ pub fn grid_arange(
 }
 
 pub fn grid_arange_3d(
-    xl: f32,
-    xr: f32,
-    x_spacing: f32,
-    yl: f32,
-    yr: f32,
-    y_spacing: f32,
-    zl: f32,
-    zr: f32,
-    z_spacing: f32,
-) -> (Vec<f32>, Vec<f32>, Vec<f32>) {
+    xl: f64,
+    xr: f64,
+    x_spacing: f64,
+    yl: f64,
+    yr: f64,
+    y_spacing: f64,
+    zl: f64,
+    zr: f64,
+    z_spacing: f64,
+) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
     let x_arange = arange(xl, xr, x_spacing);
     let y_arange = arange(yl, yr, y_spacing);
     let z_arange = arange(zl, zr, z_spacing);
@@ -109,21 +109,21 @@ pub fn grid_arange_3d(
 }
 
 pub fn tank_2d(
-    mut xl: f32,
-    mut xr: f32,
-    x_spacing: f32,
-    mut yl: f32,
-    mut yr: f32,
-    y_spacing: f32,
+    mut xl: f64,
+    mut xr: f64,
+    x_spacing: f64,
+    mut yl: f64,
+    mut yr: f64,
+    y_spacing: f64,
     layers: usize,
     outside: bool,
-) -> (Vec<f32>, Vec<f32>) {
+) -> (Vec<f64>, Vec<f64>) {
     assert!(layers > 0);
     if outside {
-        xl = xl - (layers - 1) as f32 * x_spacing - x_spacing / 2.;
-        xr = xr + (layers - 1) as f32 * x_spacing + x_spacing / 2.;
-        yl = yl - (layers - 1) as f32 * y_spacing - y_spacing / 2.;
-        yr = yr + (layers - 1) as f32 * y_spacing + y_spacing / 2.;
+        xl = xl - (layers - 1) as f64 * x_spacing - x_spacing / 2.;
+        xr = xr + (layers - 1) as f64 * x_spacing + x_spacing / 2.;
+        yl = yl - (layers - 1) as f64 * y_spacing - y_spacing / 2.;
+        yr = yr + (layers - 1) as f64 * y_spacing + y_spacing / 2.;
     }
     let x_arange = arange(xl, xr, x_spacing);
 
@@ -132,10 +132,10 @@ pub fn tank_2d(
     // now filter the particles which only belong to tank
     let (mut x, mut y) = (vec![], vec![]);
 
-    let x_left_cutoff = xl + (layers - 1) as f32 * x_spacing + x_spacing / 2.;
+    let x_left_cutoff = xl + (layers - 1) as f64 * x_spacing + x_spacing / 2.;
     let x_right_cutoff =
-        x_arange[x_arange.len() - 1] - (layers - 1) as f32 * x_spacing - x_spacing / 2.;
-    let y_bottom_cutoff = yl + (layers - 1) as f32 * y_spacing + y_spacing / 2.;
+        x_arange[x_arange.len() - 1] - (layers - 1) as f64 * x_spacing - x_spacing / 2.;
+    let y_bottom_cutoff = yl + (layers - 1) as f64 * y_spacing + y_spacing / 2.;
 
     for i in 0..xg.len() {
         if xg[i] < x_left_cutoff || xg[i] > x_right_cutoff {
@@ -150,17 +150,17 @@ pub fn tank_2d(
 }
 
 pub fn tank_3d(
-    xl: f32,
-    xr: f32,
-    x_spacing: f32,
-    yl: f32,
-    yr: f32,
-    y_spacing: f32,
-    zl: f32,
-    zr: f32,
-    z_spacing: f32,
+    xl: f64,
+    xr: f64,
+    x_spacing: f64,
+    yl: f64,
+    yr: f64,
+    y_spacing: f64,
+    zl: f64,
+    zr: f64,
+    z_spacing: f64,
     layers: usize,
-) -> (Vec<f32>, Vec<f32>, Vec<f32>) {
+) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
     let x_arange = arange(xl, xr, x_spacing);
     let z_arange = arange(zl, zr, z_spacing);
 
@@ -169,13 +169,13 @@ pub fn tank_3d(
     // now filter the particles which only belong to tank
     let (mut x, mut y, mut z) = (vec![], vec![], vec![]);
 
-    let x_left_cutoff = xl + (layers - 1) as f32 * x_spacing + x_spacing / 2.;
+    let x_left_cutoff = xl + (layers - 1) as f64 * x_spacing + x_spacing / 2.;
     let x_right_cutoff =
-        x_arange[x_arange.len() - 1] - (layers - 1) as f32 * x_spacing - x_spacing / 2.;
-    let y_bottom_cutoff = yl + (layers - 1) as f32 * y_spacing + y_spacing / 2.;
-    let z_back_cutoff = zl + (layers - 1) as f32 * z_spacing + z_spacing / 2.;
+        x_arange[x_arange.len() - 1] - (layers - 1) as f64 * x_spacing - x_spacing / 2.;
+    let y_bottom_cutoff = yl + (layers - 1) as f64 * y_spacing + y_spacing / 2.;
+    let z_back_cutoff = zl + (layers - 1) as f64 * z_spacing + z_spacing / 2.;
     let z_front_cutoff =
-        z_arange[z_arange.len() - 1] - (layers - 1) as f32 * z_spacing - z_spacing / 2.;
+        z_arange[z_arange.len() - 1] - (layers - 1) as f64 * z_spacing - z_spacing / 2.;
 
     for i in 0..xg.len() {
         if xg[i] < x_left_cutoff || xg[i] > x_right_cutoff {
@@ -192,32 +192,32 @@ pub fn tank_3d(
 }
 
 pub fn hollow_box_2d(
-    mut xl: f32,
-    mut xr: f32,
-    x_spacing: f32,
-    mut yl: f32,
-    mut yr: f32,
-    y_spacing: f32,
+    mut xl: f64,
+    mut xr: f64,
+    x_spacing: f64,
+    mut yl: f64,
+    mut yr: f64,
+    y_spacing: f64,
     layers: usize,
     outside: bool,
-) -> (Vec<f32>, Vec<f32>) {
+) -> (Vec<f64>, Vec<f64>) {
     let (xl_lim, xr_lim, yl_lim, yr_lim) = match outside {
         true => {
             let xl_lim = xl;
             let xr_lim = xr;
             let yl_lim = yl;
             let yr_lim = yr;
-            xl = xl - layers as f32 * x_spacing;
-            yl = yl - layers as f32 * y_spacing;
-            xr = xr + layers as f32 * x_spacing + x_spacing / 2.;
-            yr = yr + layers as f32 * y_spacing + y_spacing / 2.;
+            xl = xl - layers as f64 * x_spacing;
+            yl = yl - layers as f64 * y_spacing;
+            xr = xr + layers as f64 * x_spacing + x_spacing / 2.;
+            yr = yr + layers as f64 * y_spacing + y_spacing / 2.;
             (xl_lim, xr_lim, yl_lim, yr_lim)
         }
         false => {
-            let xl_lim = xl + (layers - 1) as f32 * x_spacing + x_spacing / 2.;
-            let xr_lim = xr - (layers - 1) as f32 * x_spacing - x_spacing / 2.;
-            let yl_lim = yl + (layers - 1) as f32 * y_spacing + y_spacing / 2.;
-            let yr_lim = yr - (layers - 1) as f32 * y_spacing - y_spacing / 2.;
+            let xl_lim = xl + (layers - 1) as f64 * x_spacing + x_spacing / 2.;
+            let xr_lim = xr - (layers - 1) as f64 * x_spacing - x_spacing / 2.;
+            let yl_lim = yl + (layers - 1) as f64 * y_spacing + y_spacing / 2.;
+            let yr_lim = yr - (layers - 1) as f64 * y_spacing - y_spacing / 2.;
             (xl_lim, xr_lim, yl_lim, yr_lim)
         }
     };
@@ -239,7 +239,7 @@ pub fn hollow_box_2d(
     (x, y)
 }
 
-pub fn circle_2d(center: (f32, f32), radius: f32, spacing: f32) -> (Vec<f32>, Vec<f32>) {
+pub fn circle_2d(center: (f64, f64), radius: f64, spacing: f64) -> (Vec<f64>, Vec<f64>) {
     // create a 2d grid
     let (xg, yg) = grid_arange(
         center.0 - radius + spacing / 2.,
@@ -264,18 +264,18 @@ pub fn circle_2d(center: (f32, f32), radius: f32, spacing: f32) -> (Vec<f32>, Ve
 
 /// A simple struct to test different geometries
 pub struct Entity {
-    x: Vec<f32>,
-    y: Vec<f32>,
-    z: Vec<f32>,
-    rad: Vec<f32>,
+    x: Vec<f64>,
+    y: Vec<f64>,
+    z: Vec<f64>,
+    rad: Vec<f64>,
 }
 
 impl Entity {
-    pub fn from_xyz_rad(x: Vec<f32>, y: Vec<f32>, z: Vec<f32>, rad: Vec<f32>) -> Self {
+    pub fn from_xyz_rad(x: Vec<f64>, y: Vec<f64>, z: Vec<f64>, rad: Vec<f64>) -> Self {
         Entity { x, y, z, rad }
     }
 
-    pub fn from_xy(x: Vec<f32>, y: Vec<f32>) -> Self {
+    pub fn from_xy(x: Vec<f64>, y: Vec<f64>) -> Self {
         Entity::from_xyz_rad(x.clone(), y.clone(), vec![0.; x.len()], vec![1.; x.len()])
     }
     pub fn write_vtk(self, filename: &str) {

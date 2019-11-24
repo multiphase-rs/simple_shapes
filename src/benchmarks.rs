@@ -1,7 +1,7 @@
 // [[file:~/phd/code_phd/simple_shapes/README.org::code:create_zhang_geometry][code:create_zhang_geometry]]
 use crate::{tank_2d, circle_2d};
 /// Create stack of cylinders as in the benchmark of Zhang
-pub fn create_cylinders_zhang(spacing: f32) -> (Vec<f32>, Vec<f32>, Vec<usize>) {
+pub fn create_cylinders_zhang(spacing: f64) -> (Vec<f64>, Vec<f64>, Vec<usize>) {
     // We follow three steps while creating the geometry
     // - Create bottom layer
     // - Create bottom second layer
@@ -114,7 +114,7 @@ pub fn create_cylinders_zhang(spacing: f32) -> (Vec<f32>, Vec<f32>, Vec<usize>) 
 }
 
 /// Create geometry as in the benchmark of Zhang solid bodies
-pub fn create_zhang_geometry(spacing: f32) -> (Vec<f32>, Vec<f32>, Vec<usize>, Vec<f32>, Vec<f32>){
+pub fn create_zhang_geometry(spacing: f64) -> (Vec<f64>, Vec<f64>, Vec<usize>, Vec<f64>, Vec<f64>){
     // get the x, y and body id vectors
     let (xc, yc, bid) = create_cylinders_zhang(spacing);
     // create the tank
